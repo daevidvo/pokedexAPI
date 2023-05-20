@@ -1,6 +1,6 @@
-const { pokemon, thought } = require("../models/index.js");
+const { pokemon, thought } = require("../models");
 
-async function getPokemon(req, res) {
+async function getAllPokemon(req, res) {
   try {
     const pokemonData = await pokemon.find();
     res.status(200).json(pokemonData);
@@ -56,10 +56,58 @@ async function deleteSinglePokemon(req, res) {
       _id: req.params.pokemonID,
     });
     if (!pokemonData) {
-      res.status(500).json({message: 'no pokemon with this id exists failed to delete'})
+      res
+        .status(500)
+        .json({ message: "no pokemon with this id exists failed to delete" });
     } else {
-        thought.deleteMany({_id: {$in: pokemon.thought}})
-        res.status(200).json({message: 'successfully deleted pokemon and its associated thoughts'})
+      thought.deleteMany({ _id: { $in: pokemon.thought } });
+      res.status(200).json({
+        message: "successfully deleted pokemon and its associated thoughts",
+      });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+}
+
+async function postSinglePokemonFriend(req, res) {
+  try {
+    const friendData = await pokemon.findOneAndUpdate(
+      { _id: req.params.pokemonID },
+      { $set: { friends: req.params.friendID } },
+      { runValidators: true, new: true }
+    );
+    if (!friendData) {
+      res
+        .status(500)
+        .json({
+          message: "no pokemon with this id was found failed to update friends",
+        });
+    } else {
+      res.status(200).json(friendData);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+}
+
+async function deleteSinglePokemonFriend(req, res) {
+  try {
+    const friendData = await pokemon.findOneAndUpdate(
+      { _id: req.params.pokemonID },
+      { $pull: { friends: req.params.friendID } },
+      { runValidators: true, new: true }
+    );
+    if (!friendData) {
+      res
+        .status(500)
+        .json({
+          message: "no pokemon with this id exists failed to remove friend",
+        });
+    } else {
+      res
+        .status(200)
+        .json({ message: "successfully delete friend from this pokemon" });
     }
   } catch (err) {
     res.status(500).json(err);
@@ -67,9 +115,11 @@ async function deleteSinglePokemon(req, res) {
 }
 
 module.exports = {
-  getPokemon,
+  getAllPokemon,
   postPokemon,
   getSinglePokemon,
   putSinglePokemon,
-  deleteSinglePokemon
+  deleteSinglePokemon,
+  postSinglePokemonFriend,
+  deleteSinglePokemonFriend,
 };
