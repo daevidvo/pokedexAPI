@@ -22,7 +22,7 @@ async function getSinglePokemon(req, res) {
   try {
     const pokemonData = await pokemon.findOne({ _id: req.params.pokemonID });
     if (!pokemonData) {
-      res.status(500).json({ message: "no pokemon with this id exists" });
+      res.status(404).json({ message: "no pokemon with this id exists" });
     } else {
       res.status(200).json(pokemonData);
     }
@@ -40,7 +40,7 @@ async function putSinglePokemon(req, res) {
     );
     if (!pokemonData) {
       res
-        .status(500)
+        .status(404)
         .json({ message: "no pokemon with this id exists failed to update" });
     } else {
       res.status(200).json(pokemonData);
@@ -57,7 +57,7 @@ async function deleteSinglePokemon(req, res) {
     });
     if (!pokemonData) {
       res
-        .status(500)
+        .status(404)
         .json({ message: "no pokemon with this id exists failed to delete" });
     } else {
       thought.deleteMany({ _id: { $in: pokemon.thought } });
@@ -74,12 +74,12 @@ async function postSinglePokemonFriend(req, res) {
   try {
     const friendData = await pokemon.findOneAndUpdate(
       { _id: req.params.pokemonID },
-      { $set: { friends: req.params.friendID } },
+      { $push: {friends: req.params.friendID} },
       { runValidators: true, new: true }
     );
     if (!friendData) {
       res
-        .status(500)
+        .status(404)
         .json({
           message: "no pokemon with this id was found failed to update friends",
         });
@@ -100,7 +100,7 @@ async function deleteSinglePokemonFriend(req, res) {
     );
     if (!friendData) {
       res
-        .status(500)
+        .status(404)
         .json({
           message: "no pokemon with this id exists failed to remove friend",
         });
