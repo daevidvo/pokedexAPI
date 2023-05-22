@@ -7,7 +7,7 @@ const pokemonSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/^\w+@\w+.\w{2,4}$/, "Please enter a valid email address"],
+      match: [/^\w+@\w+.\w{2,4}$/, "Please enter a valid email address"], // email regex for word@word.word
     },
     thought: [{ type: mongoose.Schema.Types.ObjectId, ref: "thought" }],
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "pokemon" }],

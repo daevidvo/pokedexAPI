@@ -1,4 +1,4 @@
-const { pokemon, thought } = require("../models");
+const { pokemon } = require("../models");
 
 async function getAllPokemon(req, res) {
   try {

@@ -9,6 +9,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 app.use(routes)
 
+// waits for the open/creation of the pokemonDB to start the server
 db.once('open', () => {
     app.listen(PORT, () => {
         console.log(`Server listening on ${PORT}`)
