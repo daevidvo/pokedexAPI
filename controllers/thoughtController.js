@@ -14,14 +14,14 @@ async function postThought(req, res) {
     const thoughtData = await thought.create(req.body);
     const userData = await pokemon.findOneAndUpdate(
       { name: req.body.pokemon },
-      { $push: { thought: thoughtData._id } },
+      { $push: { thought: thoughtData._id } }, // adds the new thought's _id to the thought array that's present in each pokemon's document
       { new: true }
     );
 
     if (thoughtData && userData) {
       res.status(200).json(userData);
     } else {
-      res.status(400).json({message: 'error in posting check pokemon name or thought text'})
+      res.status(400).json({message: 'error in posting thought check if pokemon exists or thought text'})
     }
   } catch (err) {
     res.status(500).json(err);
@@ -82,7 +82,7 @@ async function postSingleThoughtReaction(req, res) {
     const reactionData = await thought.findOneAndUpdate(
       { _id: req.params.thoughtID },
       {
-        $push: {
+        $push: { // adds the reaction information to the reactions array of the associated thought document
           reactions: {
             reactionBody: req.body.reactionBody,
             pokemon: req.body.pokemon,
