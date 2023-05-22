@@ -20,6 +20,8 @@ async function postThought(req, res) {
 
     if (thoughtData && userData) {
       res.status(200).json(userData);
+    } else {
+      res.status(400).json({message: 'error in posting check pokemon name or thought text'})
     }
   } catch (err) {
     res.status(500).json(err);
